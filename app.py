@@ -46,7 +46,20 @@ def obtener_cliente_por_id(cliente_id):
 
 @app.route("/clientes", methods=["POST"])
 def crear_cliente():
+    if not request.is_json:
+        return jsonify({
+            "error": "La solicitud debe enviarse en formato JSON"
+        }), 400
+    
     data = request.get_json()
+
+    nombre = data.get("nombre")
+    email = data.get("email")
+
+    if not nombre or not email:
+        return jsonify({
+            "error": "Nombre y email son obligatorios"
+        }), 400
 
     nuevo_cliente = {
         "id": len(clientes) + 1,
