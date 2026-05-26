@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -43,3 +43,20 @@ def obtener_cliente_por_id(cliente_id):
     return jsonify({
         "error": "Cliente no encontrado"
     }), 404
+
+@app.route("/clientes", methods=["POST"])
+def crear_cliente():
+    data = request.get_json()
+
+    nuevo_cliente = {
+        "id": len(clientes) + 1,
+        "nombre": data["nombre"],
+        "email": data["email"]
+    }
+
+    clientes.append(nuevo_cliente)
+    
+    return jsonify({
+        "mensaje": "Cliente creado correctamente",
+        "cliente": nuevo_cliente
+    }), 201
