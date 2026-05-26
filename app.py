@@ -32,4 +32,14 @@ def obtener_clientes():
         "clientes": clientes
     }), 200
 
-
+@app.route("/clientes/<int:cliente_id>", methods=["GET"])
+def obtener_cliente_por_id(cliente_id):
+    for cliente in clientes:
+        if cliente["id"] == cliente_id:
+            return jsonify({
+                "cliente": cliente
+            }), 200
+    
+    return jsonify({
+        "error": "Cliente no encontrado"
+    }), 404
