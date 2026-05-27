@@ -44,12 +44,15 @@ portafolios = [
     }
 ]
 
+# Rutas de la API
+# Health Check
 @app.route("/health", methods=["GET"])
 def health_check():
     return jsonify({
         "status": "ok"
         }), 200
 
+# Rutas para clientes
 @app.route("/clientes", methods=["GET"])
 def obtener_clientes():
     return jsonify({
@@ -98,6 +101,7 @@ def crear_cliente():
         "cliente": nuevo_cliente
     }), 201
 
+# Rutas para portafolios
 @app.route("/portafolios", methods=["GET"])
 def obtener_portafolios():
     return jsonify({
@@ -133,6 +137,33 @@ def crear_portafolio():
     if not cliente_id or not nombre or not valor_total or not moneda:
         return jsonify({
             "error": "Todos los campos son obligatorios"
+        }), 400
+
+    if not isinstance(cliente_id, int):
+        return jsonify({
+            "error": "cliente_id debe ser un número entero"
+        }), 400
+    
+    cliente_existe = False
+
+    for cliente in clientes:
+        if cliente["id"] == cliente_id:
+            cliente_existe = True
+            break
+    
+    if not cliente_existe:
+        return jsonify({
+            "error": "El cliente asociado no existe"
+        }), 404
+    
+    if not isinstance(valor_total, (int, float)):
+        return jsonify({
+            "error": "valor_total debe ser un número"
+        }), 400
+
+    if valor_total <= 0:
+        return jsonify({
+            "error": "valor_total debe ser mayor a cero"
         }), 400
 
     nuevo_portafolio = {
